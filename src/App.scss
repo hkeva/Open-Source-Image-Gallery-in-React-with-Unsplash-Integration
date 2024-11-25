@@ -1,0 +1,14 @@
+.app {
+  width: 100%;
+
+  &__imageContainer {
+    display: flex;
+    gap: 20px;
+    padding: 30px;
+
+    @media (max-width: 700px) {
+      padding: 10px;
+      gap: 10px;
+    }
+  }
+}
