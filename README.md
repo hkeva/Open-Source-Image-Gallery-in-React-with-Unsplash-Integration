@@ -2,6 +2,14 @@
 
 This is a simple gallery app built with React that fetches free images using the Unsplash API.
 
+## Create env file
+
+In the root directory of the project, create a file named .env and add the following
+
+```bash
+VITE_UNSPLASH_CLIENT_KEY=your_unsplash_access_key
+```
+
 ## Demo
 
 You can check out the live demo of the project here:  
