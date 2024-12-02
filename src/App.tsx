@@ -62,7 +62,7 @@ function App() {
   }, [page]);
 
   useEffect(() => {
-    if (!query) setQuery("random");
+    if (!query) setQuery("aesthetic");
     setPhotos([]);
     setImageChunks(Array.from({ length: 4 }, () => [] as Photo[]));
     setPage(1);
