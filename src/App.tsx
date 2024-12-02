@@ -2,8 +2,8 @@ import Gallery from "./components/gallery";
 import "./App.scss";
 import Header from "./components/header";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { ThemeProvider } from "./context/themeContext";
+import { createApi } from "unsplash-js";
 
 interface Photo {
   id: string;
@@ -28,33 +28,37 @@ function App() {
     return updatedChunks;
   }
 
+  const unsplash = createApi({
+    accessKey: import.meta.env.VITE_UNSPLASH_CLIENT_KEY, // Replace with your Unsplash Access Key
+    fetch: window.fetch,
+  });
+
   const loadPhotos = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(
-        `https://api.unsplash.com/search/photos`,
-        {
-          params: {
-            client_id: import.meta.env.VITE_UNSPLASH_CLIENT_KEY,
-            query,
-            per_page: 30,
-            page,
-          },
-        }
-      );
 
-      const newPhotos: Photo[] = response.data.results;
+      const response = await unsplash.search.getPhotos({
+        query,
+        page,
+        perPage: 30,
+      });
+
+      if (response.errors) {
+        console.error("Error fetching photos:", response.errors);
+        return;
+      }
+
+      const newPhotos: Photo[] = response.response.results;
 
       setPhotos((prevPhotos) => [...prevPhotos, ...newPhotos]);
       setImageChunks((prevChunks) =>
         distributePhotosToChunks(prevChunks, newPhotos)
       );
     } catch (error) {
-      console.error("Error fetching photos:", error);
-    }
-    setTimeout(() => {
+      console.error("Error loading photos:", error);
+    } finally {
       setLoading(false);
-    }, 2000);
+    }
   };
 
   useEffect(() => {
