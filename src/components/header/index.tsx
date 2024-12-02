@@ -1,35 +1,20 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Input, Switch } from "antd";
 import { SearchOutlined, SunOutlined, MoonOutlined } from "@ant-design/icons";
 import "./index.scss";
+import { useTheme } from "../../context/themeContext";
 
 interface HeaderProps {
   onSearch: (searchTerm: string) => void;
 }
 
 const Header: React.FC<HeaderProps> = ({ onSearch }) => {
-  const [darkMode, setDarkMode] = useState<boolean>(() => {
-    return localStorage.getItem("darkMode") === "true";
-  });
+  const { isDarkMode, toggleDarkMode } = useTheme();
 
   const [searchTerm, setSearchTerm] = useState<string>("");
 
-  useEffect(() => {
-    document.body.classList.toggle("dark-theme", darkMode);
-  }, [darkMode]);
-
-  const handleToggle = () => {
-    setDarkMode((prevMode) => {
-      const newMode = !prevMode;
-      localStorage.setItem("darkMode", JSON.stringify(newMode));
-      document.body.classList.toggle("dark-theme", newMode);
-      return newMode;
-    });
-  };
-
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setSearchTerm(value);
+    setSearchTerm(e.target.value);
   };
 
   const handleSearch = () => {
@@ -60,9 +45,9 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
       <Switch
         checkedChildren={<SunOutlined />}
         unCheckedChildren={<MoonOutlined />}
-        checked={darkMode}
-        onChange={handleToggle}
-        className={`theme-switch ${darkMode ? "dark" : "light"}`}
+        checked={isDarkMode}
+        onChange={toggleDarkMode}
+        className={`theme-switch ${isDarkMode ? "dark" : "light"}`}
       />
     </div>
   );

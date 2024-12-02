@@ -3,6 +3,7 @@ import "./App.scss";
 import Header from "./components/header";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { ThemeProvider } from "./context/themeContext";
 
 interface Photo {
   id: string;
@@ -17,6 +18,7 @@ function App() {
   const [imageChunks, setImageChunks] = useState<Photo[][]>([]);
   const [query, setQuery] = useState<string>("apple");
   const [page, setPage] = useState(1);
+  const [isLoading, setLoading] = useState(false);
 
   function distributePhotosToChunks(chunks: Photo[][], newPhotos: Photo[]) {
     const updatedChunks = [...chunks];
@@ -28,6 +30,7 @@ function App() {
 
   const loadPhotos = async () => {
     try {
+      setLoading(true);
       const response = await axios.get(
         `https://api.unsplash.com/search/photos`,
         {
@@ -49,6 +52,7 @@ function App() {
     } catch (error) {
       console.error("Error fetching photos:", error);
     }
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -84,18 +88,22 @@ function App() {
   }, []);
 
   const handleSearch = (searchTerm: string) => {
-    setQuery(searchTerm);
+    if (searchTerm) setQuery(searchTerm);
   };
 
   return (
-    <div className="app">
-      <Header onSearch={handleSearch} />
-      <div className="app__imageContainer">
-        {imageChunks.map((chunk, index) => (
-          <Gallery key={index} images={chunk} />
-        ))}
+    <ThemeProvider>
+      <div className="app">
+        <Header onSearch={handleSearch} />
+        {isLoading && <div className="app__overlay"></div>}
+
+        <div className="app__imageContainer">
+          {imageChunks.map((chunk, index) => (
+            <Gallery key={index} images={chunk} />
+          ))}
+        </div>
       </div>
-    </div>
+    </ThemeProvider>
   );
 }
 
