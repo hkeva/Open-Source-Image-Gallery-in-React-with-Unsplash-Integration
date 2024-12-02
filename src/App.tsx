@@ -16,7 +16,7 @@ interface Photo {
 function App() {
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [imageChunks, setImageChunks] = useState<Photo[][]>([]);
-  const [query, setQuery] = useState<string>("apple");
+  const [query, setQuery] = useState<string>("aesthetic");
   const [page, setPage] = useState(1);
   const [isLoading, setLoading] = useState(false);
 
@@ -52,7 +52,9 @@ function App() {
     } catch (error) {
       console.error("Error fetching photos:", error);
     }
-    setLoading(false);
+    setTimeout(() => {
+      setLoading(false);
+    }, 2000);
   };
 
   useEffect(() => {
@@ -75,7 +77,7 @@ function App() {
   const handleScroll = () => {
     const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
 
-    if (scrollTop + clientHeight >= scrollHeight - 250) {
+    if (scrollTop + clientHeight >= scrollHeight - 350) {
       setPage((prevPage) => prevPage + 1);
     }
   };
